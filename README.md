@@ -99,7 +99,7 @@ Status: **En desarrollo**
 
 ## Contacto
 
-**WhatsApp:** [+52 993 234 0850](https://wa.me/529932340850)
+**WhatsApp:** [+52 5544621764](https://wa.me/525544621764
 **Email:** ayrtoncela94@gmail.com
 **GitHub:** [github.com/ayrtoncela](https://github.com/ayrtoncela)
 
