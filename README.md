@@ -51,7 +51,46 @@ Instagram DM  →  Bot GPT-4o-mini  →  Backend Node.js  →  Supabase
 
 ---
 
-### 2. Laboratorio Clínico — Bot de agendamiento por WhatsApp
+### 2. Mikaela Montenegro — Bot de Instagram + Website para artista plástica
+
+> Artista visual ecuatoriana con exposiciones en Nueva York, París y Quito. Sistema completo: bot de Instagram por campañas, website bilingüe y dashboard de gestión de alumnos.
+
+```
+Instagram DM  →  Bot GPT-4o-mini  →  Backend Node.js  →  Supabase
+(desde reel)         ↓ campañas            ↓
+                 Borrador IA          Dashboard ops
+                 (copy-paste)        (alumnos + cupo)
+```
+
+**Bot de campañas**
+- Responde únicamente a DMs originados desde reels boosteados
+- Cada campaña tiene su contexto: qué se ofrece, precio, horario, cupo, lugar
+- Matcheo automático por `post_id` del anuncio (`ads_context_data` de Meta)
+- Cupo máximo configurable: auto-pausa la campaña al inscribir el último alumno
+- Alumnos ya inscritos siguen recibiendo respuesta aunque la campaña esté pausada
+- Killswitch individual por conversación (tomar/liberar bot por chat)
+- Borrador IA: genera respuesta de campaña para copy-paste manual cuando el bot no puede enviar (ventana 24h)
+- Protección contra prompt injection, roleplay y markdown
+
+**Dashboard de alumnos**
+- Inscribir alumno desde la conversación → vinculado al taller y a la campaña
+- Contador en tiempo real: `5 / 8 inscritos` con auto-pausa al llenarse
+- Badges por conversación mostrando talleres inscritos y estado de pago
+
+**Website bilingüe (ES/EN)**
+- Landing page con dropdown de exposiciones individuales en nav
+- Páginas `/exposicion/:slug`: slideshow con flechas + lightbox + cédula de obra
+- Modal de compra: obra original + prints giclée en 4 tamaños (A4–A1)
+- Página `/bio` con CV completo: formación, exhibiciones individuales y colectivas
+- Sección Escuela de Arte con cursos permanentes y talleres especiales
+
+**Stack:** `Node.js` `Express` `GPT-4o-mini` `Instagram Graph API` `Supabase` `PostgreSQL` `Railway`
+
+Status: **Live**
+
+---
+
+### 3. Laboratorio Clínico — Bot de agendamiento por WhatsApp
 
 > Agendamiento automático en 5 pasos — selección de sucursal, estudio e instrucciones de preparación.
 
@@ -66,7 +105,7 @@ Status: **Live Demo** — [web-page-saa-s.vercel.app](https://web-page-saa-s.ver
 
 ---
 
-### 3. Hub de Clientes — Herramienta interna con automatización Ansible
+### 4. Hub de Clientes — Herramienta interna con automatización Ansible
 
 > Sistema centralizado de información de clientes para una firma de consultoría. Acceso rápido a datos, contratos e historial. Runner de playbooks Ansible para automatizar tareas de administración en servidores de clientes.
 
@@ -83,7 +122,8 @@ Status: **En desarrollo**
 | **Agentes conversacionales** | LLM + lógica de negocio real + edge cases + escalación humana |
 | **RAG pipelines** | Chunking · embeddings · vector search · respuesta contextualizada |
 | **Backend** | Webhooks · máquinas de estado · APIs · persistencia · monitoreo |
-| **Dashboards** | Operaciones en tiempo real · finanzas · búsqueda semántica |
+| **Dashboards** | Operaciones en tiempo real · finanzas · alumnos · búsqueda semántica |
+| **Websites** | Landing pages bilingües · galerías · páginas de exposición · e-commerce de arte |
 | **Automatización** | n8n · Python · Ansible · GitHub Actions |
 
 ---
@@ -99,8 +139,8 @@ Status: **En desarrollo**
 
 ## Contacto
 
-**WhatsApp:** [+52 5544621764](https://wa.me/525544621764
-**Email:** ayrtoncela94@gmail.com
+**WhatsApp:** [+52 5544621764](https://wa.me/525544621764)  
+**Email:** ayrtoncela94@gmail.com  
 **GitHub:** [github.com/ayrtoncela](https://github.com/ayrtoncela)
 
 > Construido con ayuda de Claude
