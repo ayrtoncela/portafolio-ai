@@ -27,6 +27,8 @@
 
 **Stack:** `Node.js` `Express` `OpenAI` `pgvector` `Instagram Graph API` `Supabase` `PostgreSQL` `Stripe` `Railway` `Sentry`
 
+📄 [Case study](https://www.ayrtoncela.cloud/atico.html)
+
 ---
 
 ### 2. Mikaela Montenegro — Conversational CRM and lead attribution · `Live`
@@ -44,9 +46,29 @@
 
 **Stack:** `Node.js` `Express` `OpenAI` `RAG` `Supabase` `Stripe` `Resend` `Railway`
 
+📄 [Case study](https://www.ayrtoncela.cloud/mikaela.html)
+
 ---
 
-### 3. AyrTok — Conversational booking platform (multi-tenant SaaS) · `Live`
+### 3. RENACE 2026 — QR tickets, offline check-in and certificates · `Delivered`
+
+> Two-day event in Guayaquil (September 6–7, 2026). Individual QR tickets for every attendee, door check-in that could not depend on the venue's wifi, and attendance certificates afterwards.
+
+**Results:** 318 attendees across 4 ticket types · 305 tickets delivered by email without a bounce · 6 phones scanning offline at one door · 237 certificates delivered
+
+- Data cleaning from the organizer's spreadsheet: missing headers, two emails in one cell, invisible characters
+- Ticket generator (designer template + name + unique QR) and SMTP delivery with automatic reconnect
+- Bounce checker over IMAP matched against the attendee list; every failed delivery traced with a reason
+- Offline check-in PWA: QR scanning, duplicate detection with time of first entry, search by name, CSV export
+- 253 certificate PDFs matched to attendees by normalized name
+
+**Stack:** `Python` `openpyxl` `Pillow` `qrcode` `SMTP/IMAP` `ReportLab` `PWA` `html5-qrcode` `Vercel`
+
+📄 [Case study](https://www.ayrtoncela.cloud/renace.html) · 🔗 [Demo](https://checkin-rho-teal.vercel.app) (access code `renace2026`, sample data only)
+
+---
+
+### 4. AyrTok — Conversational booking platform (multi-tenant SaaS) · `Live`
 
 > My own product. Small clinics and businesses take bookings by hand over WhatsApp and Instagram.
 
@@ -61,7 +83,7 @@
 
 ---
 
-### 4. Clinical lab — WhatsApp booking bot · `Live demo`
+### 5. Clinical lab — WhatsApp booking bot · `Live demo`
 
 - Step-by-step booking: study type → branch → day → time → patient data
 - 3 branches with embedded schedules and preparation instructions per study
@@ -74,13 +96,15 @@
 
 ---
 
-### 5. Personal finance platform — Local-first data pipeline
+### 6. Personal finance platform — Local-first data pipeline
 
 - One parser per bank/card issuer: PDF text extraction plus OCR for scanned statements
 - Transactions normalized into a single SQLite database with categorization and monthly indicators
 - Data-quality audit found and fixed 29 duplicated and 4 miscategorized transactions that inflated one month by ~25%
 
 **Stack:** `Python` `SQLite` `pdfplumber` `Tesseract OCR`
+
+📄 [Case study](https://www.ayrtoncela.cloud/finanzas.html) (screens use fictional data)
 
 ---
 
