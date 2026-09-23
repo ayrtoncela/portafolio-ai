@@ -1,146 +1,140 @@
-# AI Solutions Builder — Ayrton Cela
+# Ayrton Cela — Engineering & Automation Portfolio
 
-> Diseño e implemento sistemas de IA de extremo a extremo — del modelo a la interfaz que el equipo usa todos los días.
-> No prototipos: sistemas en producción con lógica de negocio real, integraciones reales e impacto medible.
+> Engineering manager and hands-on builder with 8+ years across telecommunications, APIs, infrastructure and AI automation.
+> I build production systems that turn real conversations into clean, structured, searchable data.
 
-🌐 **Portfolio:** [ayrtoncela.vercel.app](https://ayrtoncela.vercel.app/)
-🌐 **Demo live:** [web-page-saa-s.vercel.app](https://web-page-saa-s.vercel.app)
-🎥 **Video demo:** [Ver en YouTube](https://www.youtube.com/watch?v=_C-984BwlBQ)
+🌐 **Portfolio:** [ayrtoncela.cloud](https://ayrtoncela.cloud)
+🎥 **Video demo:** [WhatsApp bot + backend](https://www.youtube.com/watch?v=_C-984BwlBQ)
+🇪🇸 **Versión en español:** [portafolio-bots](https://github.com/ayrtoncela/portafolio-bots)
+
+> Client code lives in private repositories. Happy to walk through architecture, data models or a live demo on a call.
 
 ---
 
-## Proyectos
+## Projects
 
-### 1. Atico Film Lab — Sistema completo de pedidos por Instagram DM
+### 1. Atico Film Lab — Order management over Instagram DMs · `Live`
 
-> Laboratorio de revelado analógico en CDMX. Pasaron de recibir pedidos a mano por DM a tener un sistema end-to-end automatizado.
+> Film processing lab in Mexico City. Every order used to live in the team's Instagram inbox — no tracking, no history.
 
-**Métricas (Feb–Mar 2026):** ~$50K MXN procesados · ~30+ pedidos · ~150+ rollos revelados · v3.26 activo
+**Results:** $50K+ MXN processed in the first 2 months · 150+ film rolls tracked end to end
+
+- Conversational bot quotes from the real catalog, confirms the order and guides payment (ES/EN, auto-detected)
+- Each conversation becomes a structured order: ID (`ORD-YYYYMM-XXXX`), format, quantity, price, branch, status
+- Payment receipts received by DM and validated from the dashboard
+- Operations dashboard: kanban pipeline, financial KPIs by week/month, global search (Cmd+K), human takeover
+- RAG over past conversations (`text-embedding-3-small` → pgvector) so the team can ask questions in plain language
+
+**Stack:** `Node.js` `Express` `OpenAI` `pgvector` `Instagram Graph API` `Supabase` `PostgreSQL` `Stripe` `Railway` `Sentry`
+
+---
+
+### 2. Mikaela Montenegro — Conversational CRM and lead attribution · `Live`
+
+> Visual artist and art school in Ecuador. 880+ unanswered Instagram conversations, students tracked in notes, no idea which campaign brought which student.
+
+**Results:** 880+ conversations managed · 100+ DMs handled in 24 h without intervention · unattributed leads 370 → 4
+
+- Bot grounded on her real catalog (RAG)
+- Dashboard for students, workshops, commissions, exhibitions and campaigns
+- Reconciliation of Meta ad exports against lead records to attribute each lead to its campaign
+- Campaign bot: each boosted reel has its own context (offer, price, schedule, seats); DMs are matched to the ad automatically and the campaign pauses itself when the last seat is filled
+- Bilingual website with exhibitions, artwork lightbox and a shop for originals and giclée prints
+- Content calendar synced 1:1 with the source document (202 pieces)
+
+**Stack:** `Node.js` `Express` `OpenAI` `RAG` `Supabase` `Stripe` `Resend` `Railway`
+
+---
+
+### 3. AyrTok — Conversational booking platform (multi-tenant SaaS) · `Live`
+
+> My own product. Small clinics and businesses take bookings by hand over WhatsApp and Instagram.
+
+- One backend serving many businesses; webhook routing per tenant
+- Conversations become validated appointments and client records
+- Google Calendar sync, payments through Stripe Connect (each business gets paid directly)
+- Dashboard per business: agenda, client records, conversations, payments
+
+**Stack:** `Node.js` `Express` `Supabase` `WhatsApp Cloud API` `Instagram Graph API` `Google Calendar API` `Stripe Connect` `OpenAI` `Railway`
+
+🔗 [ayrtok.com](https://ayrtok.com)
+
+---
+
+### 4. Clinical lab — WhatsApp booking bot · `Live demo`
+
+- Step-by-step booking: study type → branch → day → time → patient data
+- 3 branches with embedded schedules and preparation instructions per study
+- Every lead logged to Google Sheets + email notification
+- Same backend also serves a web chat widget
+
+**Stack:** `Node.js` `OpenAI` `Meta Cloud API (WhatsApp)` `Google Apps Script` `Google Sheets` `Railway`
+
+🔗 [Live demo](https://web-page-saa-s.vercel.app) (chat widget in the bottom-right corner)
+
+---
+
+### 5. Personal finance platform — Local-first data pipeline
+
+- One parser per bank/card issuer: PDF text extraction plus OCR for scanned statements
+- Transactions normalized into a single SQLite database with categorization and monthly indicators
+- Data-quality audit found and fixed 29 duplicated and 4 miscategorized transactions that inflated one month by ~25%
+
+**Stack:** `Python` `SQLite` `pdfplumber` `Tesseract OCR`
+
+---
+
+## Shared bot architecture
 
 ```
-Instagram DM  →  Bot GPT-4o-mini  →  Backend Node.js  →  Supabase
-                      ↓                     ↓
-               Dashboard ops          RAG pipeline
-               (equipo Atico)       (pgvector + embeddings)
+┌──────────────────┐     ┌─────────────────────┐     ┌──────────────────┐
+│  Instagram DMs   │────▶│                     │────▶│   OpenAI API     │
+│  WhatsApp        │     │  Node.js + Express  │     │  (prompt + RAG   │
+│  Web chat        │────▶│      backend        │     │   per client)    │
+└──────────────────┘     │                     │     └──────────────────┘
+                         │  • Webhook handler  │
+                         │  • State machine    │────▶┌──────────────────┐
+                         │  • Deduplication    │     │    Supabase      │
+                         │  • Session + lang   │     │  (PostgreSQL)    │
+                         │  • Human takeover   │     └──────────────────┘
+                         │  • Email alerts     │
+                         └──────────┬──────────┘
+                                    │
+                         ┌──────────┴──────────┐
+                         │  Operations         │
+                         │  dashboard          │
+                         └─────────────────────┘
 ```
 
-**Bot conversacional**
-- Detecta intención, cotiza según catálogo real, confirma pedido, guía pago
-- Bilingüe (ES/EN) con detección automática de idioma
-- Máquina de estados por conversación — sin intervención humana en flujo estándar
-- Manejo de restricciones reales de Instagram: ventana 24h, tipos de mensaje, reintentos con backoff
-
-**Backend**
-- Node.js + Express en Railway — webhooks de Instagram con deduplicación
-- Persistencia en PostgreSQL vía Supabase, monitoreo con Sentry
-- Test suite automatizado para el extractor de IA
-
-**Dashboard de operaciones**
-- Kanban en tiempo real con drag-and-drop
-- KPIs financieros con gráficas por semana/mes/3M/6M
-- Historial completo de conversaciones + búsqueda global (Cmd+K)
-
-**RAG pipeline**
-- Ingestión: chunking de conversaciones → `text-embedding-3-small` → pgvector (HNSW index)
-- Query: embed pregunta → similitud coseno → top-5 chunks → GPT-4o-mini con contexto real
-- El equipo consulta sus conversaciones en lenguaje natural: _"¿qué clientes preguntaron por escaneo?"_
-
-**Stack:** `Node.js` `Express` `GPT-4o-mini` `text-embedding-3-small` `pgvector` `Instagram Graph API` `Supabase` `PostgreSQL` `Railway` `Vercel` `Sentry`
-
-🔗 [github.com/ayrtoncela/client-foto](https://github.com/ayrtoncela/client-foto) · Status: **Live**
+- Per-client state machine so structured flows never go off track; LLM fallback for free-form messages
+- Message deduplication (`processed_messages`), configurable session timeout, ES/EN detection
+- Real Instagram/WhatsApp constraints handled: 24-hour window, message types, retries with backoff
+- Human takeover: pause the bot and reply manually from the dashboard
 
 ---
 
-### 2. Mikaela Montenegro — Bot de Instagram + Website para artista plástica
+## Professional background
 
-> Artista visual ecuatoriana con exposiciones en Nueva York, París y Quito. Sistema completo: bot de Instagram por campañas, website bilingüe y dashboard de gestión de alumnos.
-
-```
-Instagram DM  →  Bot GPT-4o-mini  →  Backend Node.js  →  Supabase
-(desde reel)         ↓ campañas            ↓
-                 Borrador IA          Dashboard ops
-                 (copy-paste)        (alumnos + cupo)
-```
-
-**Bot de campañas**
-- Responde únicamente a DMs originados desde reels boosteados
-- Cada campaña tiene su contexto: qué se ofrece, precio, horario, cupo, lugar
-- Matcheo automático por `post_id` del anuncio (`ads_context_data` de Meta)
-- Cupo máximo configurable: auto-pausa la campaña al inscribir el último alumno
-- Alumnos ya inscritos siguen recibiendo respuesta aunque la campaña esté pausada
-- Killswitch individual por conversación (tomar/liberar bot por chat)
-- Borrador IA: genera respuesta de campaña para copy-paste manual cuando el bot no puede enviar (ventana 24h)
-- Protección contra prompt injection, roleplay y markdown
-
-**Dashboard de alumnos**
-- Inscribir alumno desde la conversación → vinculado al taller y a la campaña
-- Contador en tiempo real: `5 / 8 inscritos` con auto-pausa al llenarse
-- Badges por conversación mostrando talleres inscritos y estado de pago
-
-**Website bilingüe (ES/EN)**
-- Landing page con dropdown de exposiciones individuales en nav
-- Páginas `/exposicion/:slug`: slideshow con flechas + lightbox + cédula de obra
-- Modal de compra: obra original + prints giclée en 4 tamaños (A4–A1)
-- Página `/bio` con CV completo: formación, exhibiciones individuales y colectivas
-- Sección Escuela de Arte con cursos permanentes y talleres especiales
-
-**Stack:** `Node.js` `Express` `GPT-4o-mini` `Instagram Graph API` `Supabase` `PostgreSQL` `Railway`
-
-Status: **Live**
+- **Consulting Engineering Manager** at a US-based UCaaS platform (KAZOO) — lead 6 globally distributed engineers; ~10,000-seat contact center rollout, the largest in the company's history; 30+ enterprise projects across Europe, South Africa, the US and LATAM
+- **Senior Engineer** at MCM Telecom (Mexico) — 40+ telecom projects across Mexico and LATAM
+- Kamailio · FreeSWITCH · Kazoo · BroadWorks · MetaSwitch · SIP/RTP · Ansible · Python · Linux
+- B.Eng. Electronics & Telecommunications · MBA
 
 ---
 
-### 3. Laboratorio Clínico — Bot de agendamiento por WhatsApp
+## Stack
 
-> Agendamiento automático en 5 pasos — selección de sucursal, estudio e instrucciones de preparación.
-
-- 3 sucursales con horarios embebidos
-- Instrucciones de preparación por tipo de estudio
-- Logging en Google Sheets + notificaciones email
-- Human takeover cuando el bot no puede resolver
-
-**Stack:** `Node.js` `GPT-3.5` `Meta Cloud API (WhatsApp)` `Google Apps Script` `Railway`
-
-Status: **Live Demo** — [web-page-saa-s.vercel.app](https://web-page-saa-s.vercel.app)
-
----
-
-### 4. Hub de Clientes — Herramienta interna con automatización Ansible
-
-> Sistema centralizado de información de clientes para una firma de consultoría. Acceso rápido a datos, contratos e historial. Runner de playbooks Ansible para automatizar tareas de administración en servidores de clientes.
-
-**Stack:** `n8n` `Python` `Ansible` `Node.js`
-
-Status: **En desarrollo**
-
----
-
-## Lo que construyo
-
-| | |
+| Area | Tools |
 |---|---|
-| **Agentes conversacionales** | LLM + lógica de negocio real + edge cases + escalación humana |
-| **RAG pipelines** | Chunking · embeddings · vector search · respuesta contextualizada |
-| **Backend** | Webhooks · máquinas de estado · APIs · persistencia · monitoreo |
-| **Dashboards** | Operaciones en tiempo real · finanzas · alumnos · búsqueda semántica |
-| **Websites** | Landing pages bilingües · galerías · páginas de exposición · e-commerce de arte |
-| **Automatización** | n8n · Python · Ansible · GitHub Actions |
+| Data & backend | PostgreSQL · Supabase · SQLite · Node.js · Express · Python · REST APIs · Webhooks |
+| Automation & AI | OpenAI API · RAG / pgvector · Google Apps Script · Google Sheets · n8n · Claude Code |
+| Messaging & payments | WhatsApp Cloud API · Instagram Graph API · Stripe / Stripe Connect · Google Calendar API |
+| Infrastructure | Linux · Docker · Ansible · Bash · Git / GitHub · Railway · Vercel · Cloudflare · Sentry |
 
 ---
 
-## Stack completo
+## Contact
 
-`Node.js` `Express` `Python` `OpenAI API` `GPT-4o-mini` `text-embedding-3-small`
-`pgvector` `PostgreSQL` `Supabase` `Instagram Graph API` `Meta Cloud API`
-`n8n` `Ansible` `Railway` `Vercel` `Sentry` `Google Apps Script` `GitHub Actions`
-`Cursor` `MCP`
-
----
-
-## Contacto
-
-**WhatsApp:** [+52 5544621764](https://wa.me/525544621764)  
-**Email:** ayrtoncela94@gmail.com  
-**GitHub:** [github.com/ayrtoncela](https://github.com/ayrtoncela)
-
-> Construido con ayuda de Claude
+📧 [ayrton@ayrtoncela.cloud](mailto:ayrton@ayrtoncela.cloud)
+💼 [LinkedIn](https://linkedin.com/in/ayrton-c-66361a203)
+🌐 [ayrtoncela.cloud](https://ayrtoncela.cloud)
